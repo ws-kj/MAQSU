@@ -18,7 +18,7 @@ void setup() {
   Serial.begin(9600);
   
   //radio setup    
-  Serial.println("Reciever Online");
+  //Serial.println("Reciever Online");
   radio.begin();
   radio.openReadingPipe(0, address);
   radio.setPALevel(RF24_PA_LOW);
