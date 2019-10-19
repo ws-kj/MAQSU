@@ -9,8 +9,13 @@ ser = serial.Serial('/dev/ttyACM0', 9600)
 #set up figure for plotting
 fig = plt.figure()
 ax = fig.add_subplot(1, 1, 1)
-xs = []
-ys = []
+
+#set up lines
+tplus = []
+
+mq135 = []
+mq7   = []
+mq5   = []
 
 #turn serial input into usable floats
 def readSerial():
@@ -31,27 +36,33 @@ def readSerial():
     return packet
 
 #func to add data to graph
-def animate(i, xs, ys):
+def animate(i, tplus, mq135, mq7, mq5):
     #get data from data_processor
     packet = readSerial()
-
     print(packet)
+    tplus.append(packet[0])
+    mq135.append(packet[1])
+    mq7.append(packet[2])
+    mq5.append(packet[3])
 
-    xs.append(packet[0])
-    ys.append(packet[1])
-
-    xs = xs[-50:]
-    ys = ys[-50:]
-
+    #plot data
     ax.clear()
-    ax.plot(xs, ys)
+    #ax.plot(tplus)
+    ax.plot(tplus, mq135, label="MQ-135")
+    ax.plot(tplus, mq7, label="MQ-7")
+    ax.plot(tplus, mq5, label="MQ-5")
 
+    #add legend
+    plt.legend(loc='upper left')
+
+    ax.set_ylim(ymin=0.0, ymax=2.0)
     plt.xticks(rotation=45, ha='right')
-    plt.title("Pollutant Sensor Relative Output")
-    plt.ylabel("MQ-135")
+    plt.title("Sensor Output")
+    plt.ylabel("MQ Sensor Relative Value")
+    plt.xlabel("Time (s)")
 
-
-anim = animation.FuncAnimation(fig, animate, fargs=(xs, ys), interval=2000)
+anim = animation.FuncAnimation(fig, animate,
+        fargs=(tplus, mq135, mq7, mq5), interval=2000)
 plt.show()
 
 
