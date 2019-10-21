@@ -27,10 +27,10 @@ void setup() {
 }
 void loop() {
   if (radio.available()) {
-    float data[6];
+    float data[7];
     radio.read(&data, sizeof(data));
 
-    for(int i = 0; i < 6; i++) {
+    for(int i = 0; i < 7; i++) {
       Serial.println(data[i]);
     }
     Serial.println();  

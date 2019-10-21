@@ -2,16 +2,19 @@ import serial
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import matplotlib.ticker as plticker
+import matplotlib.gridspec as  gridspec
 from matplotlib import style
 
 #open serial port for reciever
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
 #set up figure for plotting
-fig = plt.figure()
-mqax = plt.subplot(2, 1, 1)
-dhtax = plt.subplot(2, 1, 2)
+gs = gridspec.GridSpec(2, 2)
 
+fig = plt.figure()
+mqax = plt.subplot(gs[0, 0:])
+dhtax = plt.subplot(gs[1, 0])
+mplax = plt.subplot(gs[1, 1])
 #set up lines
 tplus = []
 
@@ -20,6 +23,7 @@ mq7   = []
 mq5   = []
 temp  = []
 hum   = []
+alt   = []
 
 #turn serial input into usable floats
 def readSerial():
@@ -40,7 +44,7 @@ def readSerial():
     return packet
 
 #func to add data to graph
-def animate(i, tplus, mq135, mq7, mq5, temp, hum):
+def animate(i, tplus, mq135, mq7, mq5, temp, hum, alt):
     #get data from data_processor
     packet = readSerial()
     tplus.append(packet[0])
@@ -49,10 +53,12 @@ def animate(i, tplus, mq135, mq7, mq5, temp, hum):
     mq5.append(packet[3])
     temp.append(packet[4])
     hum.append(packet[5])
+    alt.append(packet[6])
 
     #plot data
     mqax.clear()
     dhtax.clear()
+    mplax.clear()
 
     #plot lines
     mqax.plot(tplus, mq135, label="MQ-135")
@@ -62,9 +68,12 @@ def animate(i, tplus, mq135, mq7, mq5, temp, hum):
     dhtax.plot(tplus, temp, label="Temp (F)")
     dhtax.plot(tplus, hum, label="Humidity")
 
+    mplax.plot(tplus, alt, label="Altitude (Metres)")
+
     #add legend
     mqax.legend(loc='upper left')
     dhtax.legend(loc='upper left')
+    mplax.legend(loc='upper left')
 
     #limit displayed range to static value
     mqax.set_ylim(ymin=0.0, ymax=2.0)
@@ -81,8 +90,11 @@ def animate(i, tplus, mq135, mq7, mq5, temp, hum):
     dhtax.set_ylabel("Weather Data")
     dhtax.set_xlabel("Time (s)")
 
+    mplax.set_ylabel("Altitude (Metres)")
+    mplax.set_xlabel("Time (s)")
+
 anim = animation.FuncAnimation(fig, animate,
-        fargs=(tplus, mq135, mq7, mq5, temp, hum), interval=2000)
+        fargs=(tplus, mq135, mq7, mq5, temp, hum, alt), interval=2000)
 plt.show()
 
 
