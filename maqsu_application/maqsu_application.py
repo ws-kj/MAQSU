@@ -70,6 +70,9 @@ def animate(i, tplus, mq135, mq7, mq5, temp, hum, alt):
 
     mplax.plot(tplus, alt, label="Altitude (Metres)")
 
+    #title
+    fig.suptitle('MAQSU Sensor Data')
+
     #add legend
     mqax.legend(loc='upper left')
     dhtax.legend(loc='upper left')
