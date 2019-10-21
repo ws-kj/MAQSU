@@ -83,6 +83,9 @@ def animate(i, tplus, mq135, mq7, mq5, temp, hum, alt):
     dhtloc = plticker.MultipleLocator(5.0)
     dhtax.yaxis.set_major_locator(dhtloc)
 
+    mplloc = plticker.MultipleLocator(1.0)
+    mplax.yaxis.set_major_locator(dhtloc)
+
     #set labels
     mqax.set_ylabel("Pollutant Sensor Relative Value")
     mqax.set_xlabel("Time (s)")
